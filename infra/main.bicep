@@ -13,6 +13,9 @@ param entraClientId string = ''
 @secure()
 param entraClientSecret string = ''
 
+@description('Override location for Cosmos DB if primary region has capacity issues')
+param cosmosLocation string = ''
+
 // ── Derived names ──────────────────────────────────────────────────────
 
 var abbrs = loadJsonContent('./abbreviations.json')
@@ -58,6 +61,7 @@ module cosmos 'core/database/cosmos.bicep' = {
   params: {
     accountName: '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
     location: location
+    cosmosLocation: cosmosLocation != '' ? cosmosLocation : location
     tags: tags
     databaseName: 'todo-database'
     containers: [
