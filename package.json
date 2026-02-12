@@ -1,0 +1,32 @@
+{
+  "name": "mcp-todo-app",
+  "version": "1.0.0",
+  "description": "MCP Todo App with interactive UI, Entra OBO authentication, and Azure Cosmos DB",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "start": "node dist/server.js",
+    "inspector": "npx @modelcontextprotocol/inspector http://localhost:8000/mcp"
+  },
+  "dependencies": {
+    "@azure/cosmos": "^4.2.0",
+    "@azure/identity": "^4.5.0",
+    "@azure/msal-node": "^2.16.0",
+    "@modelcontextprotocol/ext-apps": "^0.4.0",
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

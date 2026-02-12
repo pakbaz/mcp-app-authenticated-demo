@@ -1,0 +1,31 @@
+name: mcp-todo-app
+metadata:
+  template: mcp-todo-app@1.0.0
+
+services:
+  server:
+    project: .
+    language: js
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: .
+
+hooks:
+  # Pre-provision: Create the Entra ID app registration
+  preprovision:
+    posix:
+      shell: sh
+      run: ./infra/auth_init.sh
+    windows:
+      shell: pwsh
+      run: ./infra/auth_init.ps1
+
+  # Post-provision: Update redirect URIs with deployed URL & write .env
+  postprovision:
+    posix:
+      shell: sh
+      run: ./infra/write_env.sh && ./infra/auth_update.sh
+    windows:
+      shell: pwsh
+      run: ./infra/write_env.ps1; ./infra/auth_update.ps1

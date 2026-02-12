@@ -1,0 +1,29 @@
+@description('Name of the Container Apps Environment')
+param name string
+
+@description('Location')
+param location string
+
+@description('Tags')
+param tags object
+
+@description('Log Analytics workspace ID')
+param logAnalyticsWorkspaceId string
+
+resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' = {
+  name: name
+  location: location
+  tags: tags
+  properties: {
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: reference(logAnalyticsWorkspaceId, '2023-09-01').customerId
+        sharedKey: listKeys(logAnalyticsWorkspaceId, '2023-09-01').primarySharedKey
+      }
+    }
+  }
+}
+
+output id string = containerAppsEnvironment.id
+output name string = containerAppsEnvironment.name
