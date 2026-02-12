@@ -162,7 +162,7 @@ echo "4. Try creating, completing, and deleting todos"
 echo ""
 echo "View logs:"
 if [ -n "${RESOURCE_GROUP_NAME:-}" ]; then
-    CONTAINER_APP_NAME=$(echo "$RESOURCE_GROUP_NAME" | sed 's/rg-/ca-server-/')
+    CONTAINER_APP_NAME="ca-server-$(echo $RESOURCE_GROUP_NAME | sed 's/rg-//')"
     echo "  az containerapp logs show --name $CONTAINER_APP_NAME --resource-group $RESOURCE_GROUP_NAME --follow"
 fi
 echo ""

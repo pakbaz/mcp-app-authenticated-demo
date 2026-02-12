@@ -9,7 +9,7 @@
       "value": "${AZURE_LOCATION}"
     },
     "cosmosLocation": {
-      "value": "${AZURE_COSMOS_LOCATION=}"
+      "value": "${AZURE_COSMOS_LOCATION:-}"
     },
     "entraClientId": {
       "value": "${ENTRA_CLIENT_ID}"
