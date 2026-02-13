@@ -58,20 +58,25 @@ echo "   Object ID: $OBJECT_ID"
 # Set the identifier URI
 az ad app update --id "$OBJECT_ID" --identifier-uris "api://$CLIENT_ID"
 
-# Add the custom OAuth2 permission scope (mcp-access)
-az ad app update --id "$OBJECT_ID" --set api.oauth2PermissionScopes="[{
-    \"adminConsentDescription\": \"Access MCP Todo App on behalf of the user\",
-    \"adminConsentDisplayName\": \"Access MCP Todo App\",
-    \"id\": \"$SCOPE_ID\",
-    \"isEnabled\": true,
-    \"type\": \"User\",
-    \"userConsentDescription\": \"Allow access to MCP Todo App on your behalf\",
-    \"userConsentDisplayName\": \"Access MCP Todo App\",
-    \"value\": \"mcp-access\"
-}]"
-
-# Set requested access token version to 2 (required for MCP OAuth)
-az ad app update --id "$OBJECT_ID" --set api.requestedAccessTokenVersion=2
+# Add the custom OAuth2 permission scope (mcp-access) using Graph API
+az rest --method PATCH \
+    --uri "https://graph.microsoft.com/v1.0/applications/$OBJECT_ID" \
+    --headers "Content-Type=application/json" \
+    --body "{
+        \"api\": {
+            \"requestedAccessTokenVersion\": 2,
+            \"oauth2PermissionScopes\": [{
+                \"adminConsentDescription\": \"Access MCP Todo App on behalf of the user\",
+                \"adminConsentDisplayName\": \"Access MCP Todo App\",
+                \"id\": \"$SCOPE_ID\",
+                \"isEnabled\": true,
+                \"type\": \"User\",
+                \"userConsentDescription\": \"Allow access to MCP Todo App on your behalf\",
+                \"userConsentDisplayName\": \"Access MCP Todo App\",
+                \"value\": \"mcp-access\"
+            }]
+        }
+    }"
 
 # Create a service principal
 SP_JSON=$(az ad sp create --id "$CLIENT_ID" --output json 2>/dev/null || \
@@ -80,11 +85,12 @@ SP_ID=$(echo "$SP_JSON" | jq -r '.id')
 
 echo "   Service Principal ID: $SP_ID"
 
-# Create a client secret
+# Create a client secret (30 days to comply with org policies)
+SECRET_END_DATE=$(date -v+30d '+%Y-%m-%d' 2>/dev/null || date -d '+30 days' '+%Y-%m-%d')
 SECRET_JSON=$(az ad app credential reset \
     --id "$OBJECT_ID" \
     --display-name "MCP Todo App Secret" \
-    --years 2 \
+    --end-date "$SECRET_END_DATE" \
     --output json)
 
 CLIENT_SECRET=$(echo "$SECRET_JSON" | jq -r '.password')

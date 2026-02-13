@@ -1,11 +1,16 @@
 {
-  // MCP server configuration for VS Code Copilot Chat
-  // After running the server locally (npm run dev), this connects VS Code to it.
+  // MCP server configuration for VS Code Copilot Chat.
+  // VS Code automatically handles the MCP authorization flow:
+  //   1. Sends request to /mcp → gets 401
+  //   2. Discovers OAuth config via /.well-known/oauth-protected-resource
+  //   3. Registers via DCR at /register
+  //   4. Authenticates user via /authorize → Entra login
+  //   5. Exchanges code at /token → gets Bearer token
+  //   6. Retries /mcp with the token
   "servers": {
     "mcp-todo-app": {
       "type": "http",
-      "url": "http://localhost:8000/mcp",
-      "headers": {}
+      "url": "http://localhost:8000/mcp"
     }
   }
 }

@@ -1,9 +1,20 @@
+import { readFileSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Pre-load the bundled ext-apps SDK (IIFE, sets window.McpExtApps)
+const extAppsBundleCode = readFileSync(
+  resolve(__dirname, "ext-apps-bundle.js"),
+  "utf-8"
+);
+
 /**
  * Self-contained HTML template for the Todo MCP App UI.
  *
  * This renders inside a sandboxed iframe in the MCP host (VS Code Copilot Chat).
- * It uses the @modelcontextprotocol/ext-apps SDK from esm.sh CDN for the
- * postMessage JSON-RPC lifecycle (ui/initialize, tool-input, tool-result, etc.)
+ * The ext-apps SDK is inlined to avoid CSP issues with external CDN imports.
  *
  * The UI communicates with the MCP server by calling `app.callServerTool()`
  * for CRUD operations. Tools with `visibility: ["app"]` are callable from
@@ -299,9 +310,14 @@ export function todoAppHtml(): string {
     <div class="loading"><div class="spinner"></div>Connecting...</div>
   </div>
 
-  <script type="module">
-    import { App, applyDocumentTheme, applyHostStyleVariables, applyHostFonts }
-      from "https://esm.sh/@modelcontextprotocol/ext-apps@0.4.0";
+  <!-- Inlined ext-apps SDK (avoids CSP issues with external CDN) -->
+  <script>${extAppsBundleCode}</script>
+
+  <script>
+    const { App, applyDocumentTheme, applyHostStyleVariables, applyHostFonts } = McpExtApps;
+
+    // Signal that the SDK loaded (for debugging)
+    console.log("[todo-app] ext-apps SDK loaded (inlined)");
 
     // ── State ──
     let todos = [];
@@ -612,6 +628,7 @@ export function todoAppHtml(): string {
         '<div class="error-msg">Failed to connect to host: ' + escHtml(err) + '</div>';
     });
   </script>
+
 </body>
 </html>`;
 }

@@ -76,7 +76,7 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
       activeRevisionsMode: 'Single'
       ingress: {
         external: true
-        targetPort: 8000
+        targetPort: 80
         transport: 'http'
         corsPolicy: {
           allowedOrigins: ['*']
@@ -101,13 +101,13 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
       containers: [
         {
           name: 'server'
-          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+          image: 'mcr.microsoft.com/k8se/quickstart:latest'
           resources: {
             cpu: json('0.5')
             memory: '1Gi'
           }
           env: [
-            { name: 'PORT', value: '8000' }
+            { name: 'PORT', value: '80' }
             { name: 'RUNNING_IN_PRODUCTION', value: 'true' }
             { name: 'AZURE_CLIENT_ID', value: identityClientId }
             { name: 'AZURE_COSMOSDB_ENDPOINT', value: cosmosEndpoint }
@@ -118,11 +118,12 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
             { name: 'ENTRA_CLIENT_ID', value: entraClientId }
             { name: 'ENTRA_CLIENT_SECRET', secretRef: 'entra-client-secret' }
             { name: 'ENTRA_TENANT_ID', value: tenantId }
+            { name: 'MCP_SERVER_BASE_URL', value: 'https://${name}.${containerAppsEnvironment.properties.defaultDomain}' }
           ]
         }
       ]
       scale: {
-        minReplicas: 0
+        minReplicas: 1
         maxReplicas: 3
         rules: [
           {

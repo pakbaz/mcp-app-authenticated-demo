@@ -35,13 +35,13 @@ COPY --from=build --chown=app:app /app/dist ./dist
 USER app
 
 # Expose the server port
-EXPOSE 8000
+EXPOSE 80
 
 # Health check for Azure Container Apps
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8000/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
 
 # Start the server
 ENV NODE_ENV=production
-ENV PORT=8000
+ENV PORT=80
 CMD ["node", "dist/server.js"]

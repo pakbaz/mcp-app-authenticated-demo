@@ -5,17 +5,17 @@
   "type": "module",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx src/server.ts",
+    "dev": "tsx --env-file=.env src/server.ts",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "start": "node dist/server.js",
-    "inspector": "npx @modelcontextprotocol/inspector http://localhost:8000/mcp"
+    "inspector": "npx @modelcontextprotocol/inspector http://localhost:80/mcp"
   },
   "dependencies": {
     "@azure/cosmos": "^4.2.0",
     "@azure/identity": "^4.5.0",
     "@azure/msal-node": "^2.16.0",
-    "@modelcontextprotocol/ext-apps": "^0.4.0",
+    "@modelcontextprotocol/ext-apps": "^1.0.1",
     "@modelcontextprotocol/sdk": "^1.25.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",

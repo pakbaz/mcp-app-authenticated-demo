@@ -22,7 +22,7 @@ AZURE_COSMOSDB_CONTAINER=todos
 AZURE_COSMOSDB_OAUTH_CONTAINER=oauth-clients
 
 # Server
-MCP_SERVER_BASE_URL=$(azd env get-value MCP_SERVER_BASE_URL 2>/dev/null || echo "http://localhost:8000")
+MCP_SERVER_BASE_URL=$(azd env get-value MCP_SERVER_BASE_URL 2>/dev/null || echo "http://localhost:80")
 PORT=8000
 RUNNING_IN_PRODUCTION=false
 EOF

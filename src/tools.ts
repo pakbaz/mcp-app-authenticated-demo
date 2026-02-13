@@ -27,11 +27,7 @@ export function registerTools(server: McpServer, store: TodoStore): void {
       description: "Interactive Todo list UI panel",
       mimeType: RESOURCE_MIME_TYPE,
       _meta: {
-        ui: {
-          csp: {
-            resourceDomains: ["https://esm.sh"],
-          },
-        },
+        ui: {},
       },
     },
     async () => ({
