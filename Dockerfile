@@ -16,6 +16,9 @@ COPY src/ ./src/
 # Build TypeScript
 RUN npm run build
 
+# Copy non-TS assets that TypeScript doesn't copy
+RUN cp src/ui/ext-apps-bundle.js dist/ui/
+
 # ── Stage 2: Production ─────────────────────────────────────────────────
 FROM node:22-alpine AS production
 
