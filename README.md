@@ -80,6 +80,19 @@ server that proxies to Entra.
 > a fully production-ready MCP auth story without the proxy.
 > ([source](https://techcommunity.microsoft.com/blog/azuredevcommunityblog/using-on-behalf-of-flow-for-entra-based-mcp-servers/4486760))
 
+## Options for Authenticated MCP Servers
+
+MCP auth is built on **OAuth 2.1**. Every MCP client is an OAuth client; every MCP server is a resource server.
+
+| Approach | How it works | Entra supports? |
+|---|---|---|
+| **Pre-registered clients only** | Explicit app reg per MCP client | ✅ Yes — but inflexible |
+| **Dynamic Client Registration (DCR)** | Auth server registers new clients on the fly (RFC 7591) | ❌ Not natively |
+| **Client ID Metadata Documents (CIMD)** | Auth server fetches a metadata doc from the client | ❌ Not natively |
+
+For **arbitrary MCP clients** (VS Code, Claude, bots ...), DCR or CIMD is required.
+For **known clients only**, pre-registration works and is the production recommendation.
+
 ### Why an OAuth Proxy?
 
 MCP clients (like VS Code) expect to register dynamically and perform OAuth
